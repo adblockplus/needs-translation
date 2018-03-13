@@ -16,7 +16,7 @@ completely ignored.
 
 ## Usage
 
-After cloning the repository, configure `language-model.js` and `exclusion.model.js` according to
+After cloning the repository, configure `language-model.js` and `exclusion-model.js` according to
 your needs. Then run the following commands where `$YOUR_XLIFF_PATH` contains your source XLIFF
 files for all languages to be compared.
 
