@@ -1,0 +1,10 @@
+{
+  "name": "needs-translation",
+  "version": "1.0.0",
+  "description": "A configurable translations diff and exclusion tool for XLIFF 1.2."
+  "license": "GPL-3.0",
+  "dependencies": {
+    "rxjs": "^5.5.6",
+    "xliff": "^2.3.0"
+  }
+}
