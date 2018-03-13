@@ -1,19 +1,18 @@
 # needs-translation
 
-A configurable translations diff and exclusion tool for XLIFF 1.2. Designed for Xcode XLIFF
-exports for localization. Implemented with Node and
-[RxJs](https://github.com/Reactive-Extensions/RxJS).
+A configurable translations diff and exclusion tool for XLIFF 1.2. Designed for Xcode exports for
+localization. Implemented with Node and [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
 ## Summary
 
 * Compares unlimited target languages to a base language
 * Excludes translations of items that are already completely translated
-* Excludes items that are not to be translated
+* Excludes items that are not to be translated based on string matching
 
 This is a tool to print only items needing translation from all localizable strings in a project.
 It makes sure that translations will exist for every language and it ignores strings that have
 already been translated. It also allows custom configuration of source strings that should be
-ignored.
+completely ignored.
 
 ## Usage
 
