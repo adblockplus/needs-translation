@@ -19,8 +19,8 @@
 
 var sourcesExcluded =
   [
-    "$(PRODUCT_DISPLAY_NAME)",
-    "$(PRODUCT_NAME)",
+    '$(PRODUCT_DISPLAY_NAME)',
+    '$(PRODUCT_NAME)',
   ]
 
 module.exports = {

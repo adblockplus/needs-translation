@@ -31,6 +31,8 @@ var Rx = require('rxjs/Rx')
 const xliff12ToJs = require('xliff/xliff12ToJs')
 var language = require('./model/language-model.js')
 var exclusions = require('./model/exclusion-model.js')
+const xliffExt = '.xliff'
+const xliffEncoding = 'utf8'
 
 /**
  * @returns Empty JSON result dictionary
@@ -45,7 +47,7 @@ function makeNewJSON()
 }
 
 /**
- * Print XLIFF from JSON
+ * Print XLIFF from JSON.
  * @param json Object to convert to XLIFF
  */
 function printXliff(json)
@@ -67,7 +69,7 @@ function xliffRead(filename)
   return new Rx.Observable( observer =>
   {
     fs.readFile(filename,
-                'utf8',
+                xliffEncoding,
                 function(err, data)
     {
       if (err)
@@ -83,7 +85,7 @@ function xliffRead(filename)
   })
 }
 
-var baseToJson = xliffRead(language.base + ".xliff").shareReplay(1)
+var baseToJson = xliffRead(language.base + xliffExt).shareReplay(1)
 
 /**
  * Compare a target language to the base language.
@@ -96,19 +98,22 @@ function compareLanguage(baseJSON,
 {
   return new Rx.Observable(observer =>
   {
+    const resourcesKey = 'resources'
+    const sourceKey = 'source'
+    const targetKey = 'target'
     var newJSON = makeNewJSON()
-    let resources = baseJSON['resources']
+    let resources = baseJSON[resourcesKey]
     for (var key in resources) {
-      newJSON['resources'][key] = {}
+      newJSON[resourcesKey][key] = {}
       let fileItems = resources[key]
       for (var itemKey in fileItems)
       {
-        let source = fileItems[itemKey]['source']
+        let source = fileItems[itemKey][sourceKey]
         if (!exclusions.isExcluded(source)) {
-          let otherLangTarget = targetJSON['resources'][key][itemKey]['target']
+          let otherLangTarget = targetJSON[resourcesKey][key][itemKey][targetKey]
           if (otherLangTarget == '')
           {
-            newJSON['resources'][key][itemKey] = fileItems[itemKey]
+            newJSON[resourcesKey][key][itemKey] = fileItems[itemKey]
           }
         }
       }
@@ -122,7 +127,7 @@ Rx.Observable.from(language.targets)
   .flatMap( target =>
   {
     return Rx.Observable.zip(baseToJson,
-                             xliffRead(target + ".xliff"))
+                             xliffRead(target + xliffExt))
   })
   .flatMap( zipped =>
   {
