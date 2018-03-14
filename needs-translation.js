@@ -54,8 +54,8 @@ function makeNewJSON()
  */
 function printXliff(json)
 {
-  const js2xliff = require("xliff/js2xliff");
-  js2xliff(json, (err, xliff) =>
+  const jsToXliff12 = require("xliff/jsToXliff12");
+  jsToXliff12(json, (err, xliff) =>
   {
     console.log(xliff);
   });
