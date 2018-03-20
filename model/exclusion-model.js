@@ -15,17 +15,20 @@
  * along with Adblock Plus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Add excluded source strings here.
+// Add excluded source strings into sourcesExcluded.
 
-var sourcesExcluded =
+"use strict";
+
+const sourcesExcluded =
   [
-    '$(PRODUCT_DISPLAY_NAME)',
-    '$(PRODUCT_NAME)',
-  ]
+    "$(PRODUCT_DISPLAY_NAME)",
+    "$(PRODUCT_NAME)"
+  ];
 
-module.exports = {
-  isExcluded: function(source)
+module.exports =
+{
+  isExcluded(source)
   {
-    return sourcesExcluded.includes(source)
+    return sourcesExcluded.includes(source);
   }
-}
+};

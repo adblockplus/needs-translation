@@ -15,37 +15,40 @@
  * along with Adblock Plus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Base language and target languages for needs-translation.
+// Base language and target languages (as an array) for needs-translation.
 
-var base = 'en'
-var targets =
+"use strict";
+
+const base = "en";
+const targets =
   [
-    'ar',
-    'bn',
-    'cs',
-    'de',
-    'en',
-    'el',
-    'es',
-    'es-MX',
-    'fr',
-    'hr',
-    'it',
-    'ja',
-    'nb',
-    'nl',
-    'pl',
-    'pt-BR',
-    'pt-PT',
-    'ro',
-    'ru',
-    'th',
-    'vi',
-    'zh-Hans',
-    'zh-Hant'
-  ]
+    "ar",
+    "bn",
+    "cs",
+    "de",
+    "en",
+    "el",
+    "es",
+    "es-MX",
+    "fr",
+    "hr",
+    "it",
+    "ja",
+    "nb",
+    "nl",
+    "pl",
+    "pt-BR",
+    "pt-PT",
+    "ro",
+    "ru",
+    "th",
+    "vi",
+    "zh-Hans",
+    "zh-Hant"
+  ];
 
-module.exports = {
+module.exports =
+{
   base,
   targets
-}
+};
