@@ -28,118 +28,22 @@
 
 "use strict";
 
-const fs = require("fs");
-const Rx = require("rxjs/Rx");
-const xliff12ToJs = require("xliff/xliff12ToJs");
+const compare = require("./lib/compare/compare.js");
 const language = require("./model/language-model.js");
-const exclusions = require("./model/exclusion-model.js");
-const xliffExt = ".xliff";
-const xliffEncoding = "utf8";
+const Rx = require("rxjs/Rx");
+const xliff = require("./lib/xliff/xliff.js");
 
-/**
- * @returns {Object} Empty JSON result dictionary
- */
-function makeNewJSON()
-{
-  return {
-    resources: {},
-    sourceLanguage: language.base,
-    targetLanguage: ""
-  };
-}
-
-/**
- * Print XLIFF from JSON.
- * @param {Object} json: Object to convert to XLIFF
- */
-function printXliff(json)
-{
-  const jsToXliff12 = require("xliff/jsToXliff12");
-  jsToXliff12(json, (err, xliff) =>
-  {
-    console.log(xliff);
-  });
-}
-
-/**
- * Read in XLIFF and emit JSON.
- * @param {string} filename
- * @returns {Observable<JSON>}
- */
-function xliffRead(filename)
-{
-  return new Rx.Observable((observer) =>
-  {
-    fs.readFile(filename, xliffEncoding, (fileErr, data) =>
-    {
-      if (fileErr)
-      {
-        observer.error(fileErr);
-      }
-      xliff12ToJs(data, (xliffErr, json) =>
-      {
-        if (xliffErr)
-        {
-          observer.error(xliffErr);
-        }
-        observer.next(json);
-        observer.complete();
-      });
-    });
-  });
-}
-
-const baseToJson = xliffRead(language.base + xliffExt).shareReplay(1);
-
-/**
- * Compare a target language to the base language.
- * @param {Object} baseJSON
- * @param {Object} targetJSON
- * @returns {Observable<JSON>}
- */
-function compareLanguage(baseJSON,
-                         targetJSON)
-{
-  return new Rx.Observable((observer) =>
-  {
-    const resourcesKey = "resources";
-    const sourceKey = "source";
-    const targetKey = "target";
-    let newJSON = makeNewJSON();
-    let resources = baseJSON[resourcesKey];
-    for (let key in resources)
-    {
-      newJSON[resourcesKey][key] = {};
-      let fileItems = resources[key];
-      for (let itemKey in fileItems)
-      {
-        let source = fileItems[itemKey][sourceKey];
-        if (!exclusions.isExcluded(source))
-        {
-          let otherLangTarget =
-            targetJSON[resourcesKey][key][itemKey][targetKey];
-          if (otherLangTarget == "")
-          {
-            newJSON[resourcesKey][key][itemKey] = fileItems[itemKey];
-          }
-        }
-      }
-    }
-    observer.next(newJSON);
-    observer.complete();
-  });
-}
-
+const baseToJson = xliff.read(language.base + xliff.ext).shareReplay(1);
 Rx.Observable.from(language.targets)
   .flatMap(target =>
   {
     return Rx.Observable.zip(baseToJson,
-                             xliffRead(target + xliffExt));
+                             xliff.read(target + xliff.ext));
   })
   .flatMap(zipped =>
   {
-    return compareLanguage(zipped[0],
-                           zipped[1]);
+    return compare.languageCompare(zipped[0],
+                                   zipped[1]);
   })
   .reduce((acc, json) =>
   {
@@ -147,5 +51,5 @@ Rx.Observable.from(language.targets)
   }, {})
   .subscribe(result =>
   {
-    printXliff(result);
+    xliff.log(result);
   });
